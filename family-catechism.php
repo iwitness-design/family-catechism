@@ -1,16 +1,16 @@
 <?php
 /**
- * Plugin Name: Plugin Name
+ * Plugin Name: Family Catechism
  * Plugin URL: http://iwitnessdesign.com
- * Description: The plugin description
+ * Description: A custom plugin for the Family Catechism web app
  * Version: 1.0.0
  * Author: iWitness Design
  * Author URI: https://iwitnessdesign.com
- * Text Domain: txt
+ * Text Domain: family-catechism
  * Domain Path: languages
  */
 
-class NewPlugin {
+class FamilyCatechism {
 
 	/**
 	 * @var
@@ -62,19 +62,8 @@ class NewPlugin {
 	 * Setup the plugin
 	 */
 	public function maybe_setup() {
-		if ( ! $this->check_required_plugins() ) {
-			return;
-		}
-
 		$this->includes();
 		$this->actions();
-	}
-
-	/**
-	 * Required Plugins notice
-	 */
-	public function required_plugins() {
-		printf( '<div class="error"><p>%s</p></div>', __( 'Something is required for the %s add-on to function.',  $this->get_id(), $this->get_plugin_name() ) );
 	}
 
 	/**
@@ -121,25 +110,6 @@ class NewPlugin {
 	/** Helper Methods **************************************/
 
 	/**
-	 * Make sure RCP is active
-	 * @return bool
-	 */
-	protected function check_required_plugins() {
-
-		if ( ! function_exists( 'is_plugin_active' ) ) {
-			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-		}
-
-		if ( function_exists( '' ) || is_plugin_active( '' ) ) {
-			return true;
-		}
-
-		add_action( 'admin_notices', array( $this, 'required_plugins' ) );
-
-		return false;
-	}
-
-	/**
 	 * Return the version of the plugin
 	 *
 	 * @since  1.0.0
@@ -157,7 +127,7 @@ class NewPlugin {
 	 * @return string the plugin name
 	 */
 	public function get_plugin_name() {
-		return __( 'NewPlugin', $this->get_id() );
+		return __( 'Family Catechism', $this->get_id() );
 	}
 
 	/**
@@ -168,7 +138,7 @@ class NewPlugin {
 	 * @return string
 	 */
 	public function get_id() {
-		return 'newplugin';
+		return 'family-catechism';
 	}
 
 	/**
@@ -207,10 +177,10 @@ class NewPlugin {
 }
 
 /**
- * @return NewPlugin
+ * @return FamilyCatechism
  */
-function newplugin() {
-	return NewPlugin::get_instance();
+function familycatechism() {
+	return FamilyCatechism::get_instance();
 }
 
-newplugin();
+familycatechism();

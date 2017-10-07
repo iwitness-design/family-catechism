@@ -1,5 +1,5 @@
-# NewPlugin
-A brand new plugin that you are building.
+# Family Catechism
+A custom plugin for the Family Catechism web app
 
 ## Setup
 Alright! You are creating a new plugin and that is fantastic! There are a few things that you need to do right off the bat to get things started correctly.

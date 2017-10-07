@@ -1,13 +1,13 @@
 {
-  "name": "new-plugin",
-  "title": "New Plugin",
-  "description": "New plugin description",
+  "name": "family-catechism",
+  "title": "Family Catechism",
+  "description": "A custom plugin for the Family Catechism web app",
   "version": "1.0.0",
   "homepage": "https://iwitnessdesign.com/",
   "author": "iWitness Design <support@iwitnessdesign.com> (https://iwitnessdesign.com/)",
   "repository": {
     "type": "git",
-    "url": "https://github.com:***.git"
+    "url": "https://github.com/iwitness-design/family-catechism"
   },
   "bugs": {
     "url": "https://iwitnessdesign.com/contact/"
@@ -23,8 +23,8 @@
   },
   "pot": {
     "type": "wp-plugin",
-    "textdomain": "newplugin",
-    "src": "newplugin.php",
+    "textdomain": "family-catechism",
+    "src": "family-catechism.php",
     "header": {
       "bugs": "https://iwitnessdesign.com/contact/",
       "team": "iWitness Design <support@iwitnessdesign.com>",
