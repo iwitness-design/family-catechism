@@ -2,3 +2,5 @@
 composer.lock
 /build/
 /node_modules/
+/vendor/composer/
+/vendor/composer/*
