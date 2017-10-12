@@ -47,6 +47,7 @@ class FamilyCatechism {
 	 */
 	protected function includes() {
 		require_once( $this->get_plugin_dir() . 'vendor/autoload.php' );
+
 	}
 
 	/**
