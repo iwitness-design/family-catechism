@@ -46,8 +46,16 @@ class FamilyCatechism {
 	 * Includes
 	 */
 	protected function includes() {
-		require_once( $this->get_plugin_dir() . 'vendor/autoload.php' );
 
+		$test = $this->get_plugin_dir();
+
+		require_once( $this->get_plugin_dir() . '/includes/Questions.php' );
+		require_once( $this->get_plugin_dir() . 'vendor/autoload.php' );
+		require_once( $this->get_plugin_dir() . '/vendor/johnbillion/extended-taxos/extended-taxos.php' );
+		require_once( $this->get_plugin_dir() . '/vendor/johnbillion/extended-cpts/extended-cpts.php' );
+		require_once( $this->get_plugin_dir() . '/vendor/webdevstudios/cmb2/init.php' );
+
+		Questions::get_instance();
 	}
 
 	/**
