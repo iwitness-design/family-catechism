@@ -15,6 +15,13 @@ class Taxos {
 	 */
 	public static $_section = 'fc_section';
 
+	/**
+	 * The language taxonomy slug
+	 *
+	 * @var string
+	 */
+	public static $_language = 'fc_language';
+
 	protected static $_instance;
 
 	public static function get_instance() {
@@ -30,6 +37,7 @@ class Taxos {
 	 */
 	protected function __construct() {
 		$this->section();
+		$this->language();
 	}
 
 	/** Create Taxonomies *********************/
@@ -64,6 +72,37 @@ class Taxos {
 				'singular' => __( 'Section', 'fc-mu' ),
 				'plural'   => __( 'Sections', 'fc-mu' ),
 				'slug'     => 'fc_section'
+
+			) );
+
+		} );
+
+	}
+
+	protected function language() {
+
+		add_action( 'init', function () {
+
+			register_extended_taxonomy( self::$_language, 'fc_question', array(
+
+				'meta_box'   => 'radio',
+				'hierarchical' => false,
+
+				# Add a custom column to the admin screen:
+				'admin_cols' => array(
+					'updated' => array(
+						'title'       => __( 'Updated', 'plf-mu' ),
+						'meta_key'    => 'updated_date',
+						'date_format' => 'd/m/Y'
+					),
+				),
+
+			), array(
+
+				# Override the base names used for labels:
+				'singular' => __( 'language', 'fc-mu' ),
+				'plural'   => __( 'languages', 'fc-mu' ),
+				'slug'     => 'fc_language'
 
 			) );
 
