@@ -13,4 +13,4 @@ plugins.glob.sync('gulp/tasks/*').forEach(function (path) {
   require(path)(gulp, plugins, config, helpers);
 });
 
-gulp.task('default', ['build', 'watchify']);
+gulp.task('default', ['build', 'watch']);

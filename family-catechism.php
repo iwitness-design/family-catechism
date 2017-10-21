@@ -58,6 +58,7 @@ class FamilyCatechism {
 
 		Questions::get_instance();
 		Taxos::get_instance();
+		FamilyCatechism\Shortcodes::get_instance();
 	}
 
 	/**

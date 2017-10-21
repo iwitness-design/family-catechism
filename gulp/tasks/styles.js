@@ -9,7 +9,7 @@ var stylesTask = function (gulp, plugins, config, helpers) {
       .pipe(plugins.sourcemaps.init())
       .pipe(plugins.plumber(helpers.onError))
       .pipe(plugins.sassGlob())
-      .pipe(plugins.sass({ outputStyle: 'expanded', includePaths: ['node_modules'] }))
+      .pipe(plugins.sass({ outputStyle: 'compressed', includePaths: ['node_modules'] }))
       .pipe(plugins.sourcemaps.write('./'))
       .pipe(gulp.dest(config.directories.css));
   });
