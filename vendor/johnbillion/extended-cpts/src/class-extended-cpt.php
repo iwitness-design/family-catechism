@@ -402,7 +402,7 @@ class Extended_CPT {
 
 		if ( isset( $orderby['meta_key'] ) ) {
 			$return['meta_key'] = $orderby['meta_key'];
-			$return['orderby']  = 'meta_value';
+			$return['orderby']  = empty( $orderby['orderby'] ) ? 'meta_value' : $orderby['orderby'];
 			// @TODO meta_value_num
 		} elseif ( isset( $orderby['post_field'] ) ) {
 			$field = str_replace( 'post_', '', $orderby['post_field'] );

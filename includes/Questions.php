@@ -1,11 +1,14 @@
 <?php
+
+namespace FamilyCatechism;
+
 /**
  * Class Questions
  *
  * Handles instatiation Questions
  *
  * @package PLF\CPT
- * @since 1.0.0
+ * @since   1.0.0
  */
 
 class Questions {
@@ -26,31 +29,38 @@ class Questions {
 	}
 
 	protected function cpt() {
-		add_action( 'init', function() {
+		add_action( 'init', function () {
 
 			register_extended_post_type( 'fc_question', array(
 
 				# Add the post type to the site's main RSS feed:
 				'show_in_feed' => true,
 
-				'menu_icon' => 'dashicons-format-status',
+				'menu_icon'     => 'dashicons-format-status',
 
 				# Show all posts on the post type archive:
-				'archive' => array(
+				'archive'       => array(
 					'nopaging' => true
 				),
 
 				# Add some custom columns to the admin screen:
-				'admin_cols' => array(
+				'admin_cols'    => array(
+					'number'   => array(
+						'title'    => 'Question Number',
+						'meta_key' => 'fc_number',
+						'default'  => 'ASC',
+					    'orderby'  => 'meta_value_num'
+					),
 					'language' => array(
-						'taxonomy' => 'fc_language'
+						'taxonomy' => Taxos::$_language
 					)
 				),
 
 				# Add a dropdown filter to the admin screen:
 				'admin_filters' => array(
-					'genre' => array(
-						'taxonomy' => 'genre'
+					'language' => array(
+						'title' => 'Language',
+					    'taxonomy' => Taxos::$_language,
 					)
 				)
 
