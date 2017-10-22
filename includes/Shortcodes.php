@@ -38,8 +38,11 @@ class Shortcodes {
 	}
 
 	protected function register_scripts() {
-		wp_enqueue_style( familycatechism()->get_id(), familycatechism()->get_plugin_url() . 'assets/css/style.css', array(), familycatechism()->get_version() );
-		wp_enqueue_script( familycatechism()->get_id(), familycatechism()->get_plugin_url() . 'assets/js/custom.min.js', array(), familycatechism()->get_version() );
+		wp_enqueue_style( familycatechism()->get_id(), familycatechism()->get_plugin_url() . 'assets/css/app.css', array(), familycatechism()->get_version() );
+
+		wp_enqueue_script( familycatechism()->get_id() . '-manifest', familycatechism()->get_plugin_url() . 'assets/js/manifest.js', array(), familycatechism()->get_version() );
+		wp_enqueue_script( familycatechism()->get_id() . '-vendor', familycatechism()->get_plugin_url() . 'assets/js/vendor.js', array(), familycatechism()->get_version() );
+		wp_enqueue_script( familycatechism()->get_id() . '-app', familycatechism()->get_plugin_url() . 'assets/js/app.js', array(), familycatechism()->get_version() );
 	}
 
 }

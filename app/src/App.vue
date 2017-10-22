@@ -1,6 +1,8 @@
 <template>
   <section id="family-catechism" class="fc">
 
+      <router-view />
+
       <header class="fc--header">
 
           <div class="fc--header--masthead"></div>
@@ -13,17 +15,25 @@
 
           <header class="fc--answer--header">
 
-              <nav>
-                  <span class="fc--answer--header--question-number"><?php _e( 'Q', familycatechism()->get_id() ); ?>{{ qNumber }}</span>
-
-                  <div class="fc--answer--header--arrows">
-                      <span class="fc--answer--header--arrows-previous"></span>
-                      <span class="fc--answer--header--arrows-next"></span>
+              <nav class="columns is-vcentered">
+                  <div class="fc--answer--header--question-number column is-narrow">
+                      <span class=""><?php _e( 'Q', familycatechism()->get_id() ); ?>{{ qNumber }}</span>
                   </div>
 
-                  <ul class="fc--answer--header--questions"></ul>
+                  <div class="column fc--answer--header--arrows is-narrow">
+                      <span class="fc--answer--header--arrows-previous">^</span>
+                      <span class="fc--answer--header--arrows-next"><</span>
+                  </div>
 
-                  <div class="fc--answer--header--actions"></div>
+                  <div class="column fc--answer--header--questions">
+                      <ul>
+                          <li>Question 1</li>
+                      </ul>
+                  </div>
+
+                  <div class="column is-narrow">
+                      <div class="fc--answer--header--actions">search</div>
+                  </div>
 
               </nav>
 
@@ -76,13 +86,6 @@ export default {
 }
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style lang="scss">
+    @import "assets/scss/app";
 </style>

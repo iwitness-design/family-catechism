@@ -42,14 +42,8 @@ class Questions {
 
 				# Add some custom columns to the admin screen:
 				'admin_cols' => array(
-
-					'published' => array(
-						'title'       => 'Published',
-						'meta_key'    => 'published_date',
-						'date_format' => 'd/m/Y'
-					),
-					'genre' => array(
-						'taxonomy' => 'genre'
+					'language' => array(
+						'taxonomy' => 'fc_language'
 					)
 				),
 
