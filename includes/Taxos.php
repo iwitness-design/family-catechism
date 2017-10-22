@@ -1,4 +1,5 @@
 <?php
+namespace FamilyCatechism;
 
 /**
  * Created by PhpStorm.
@@ -100,8 +101,8 @@ class Taxos {
 			), array(
 
 				# Override the base names used for labels:
-				'singular' => __( 'language', 'fc-mu' ),
-				'plural'   => __( 'languages', 'fc-mu' ),
+				'singular' => __( 'Language', 'fc-mu' ),
+				'plural'   => __( 'Languages', 'fc-mu' ),
 				'slug'     => 'fc_language'
 
 			) );
