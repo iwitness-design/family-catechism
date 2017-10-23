@@ -198,6 +198,8 @@ class FC_Importer {
 
 		WP_CLI::debug( $key . '---' );
 
+		WP_CLI::log( $key  );
+
 	}
 
 	protected static function write_term_meta( $item, $term_id ) {
