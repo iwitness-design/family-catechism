@@ -55,6 +55,7 @@ class FamilyCatechism {
 		FamilyCatechism\Questions::get_instance();
 		FamilyCatechism\Taxos::get_instance();
 		FamilyCatechism\Shortcodes::get_instance();
+		FamilyCatechism\Metaboxes::get_instance();
 
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			require_once( $this->get_plugin_dir() . 'commands/class-fc-importer.php' );
