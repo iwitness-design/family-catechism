@@ -22,6 +22,8 @@ class FC_Importer {
 	 */
 	public function import( $args ) {
 
+
+
 		WP_CLI::log( "\nStarting the import process..." );
 
 		$import_file = $args[0];
@@ -122,9 +124,7 @@ class FC_Importer {
 												$part_id,
 												$chapter_id
 											),
-											'fc_language' => array(
-												$language->term_id
-											)
+											'fc_language' => array( $language->term_id ),
 										)
 									);
 
@@ -136,14 +136,13 @@ class FC_Importer {
 										WP_CLI::error( 'Something went wrong!' );
 									}
 
-									$loop_level = new FC_Loop_Level();
-									$loop_level->loop_level( $question, $post_id, '' );
+									$this->write_meta( $question, $post_id );
 
 								}
 							} else { // if this is just a single question section
 								$count_questions ++;
 
-								WP_CLI::log( sprintf( WP_CLI::colorize("%p-->-->-->Question: %s %n" ), $question['Name'] ) );
+								WP_CLI::log( sprintf( WP_CLI::colorize("%p-->-->-->Question %s: %s %n" ), $question['Number'], $question['Name'] ) );
 
 								$post_array = array(
 									'post_content' => $questions['Answers']['TextAnswer']['Text'],
@@ -171,8 +170,7 @@ class FC_Importer {
 									WP_CLI::error( 'Something went wrong!' );
 								}
 
-								$loop_level = new FC_Loop_Level();
-								$loop_level->loop_level( $question, $post_id, '' );
+								$this->write_meta( $question, $post_id );
 
 							}
 						}
@@ -186,7 +184,34 @@ class FC_Importer {
 		WP_CLI::log( "\n" );
 	}
 
-	public static function write_meta( $key, $value, $post_id, $parent_key ) {
+	public function write_meta( $meta, $post_id, $parent_key = '' ) {
+
+		foreach ( (array) $meta as $key => $value ) {
+
+			if( empty( $value ) ) {
+				continue;
+			}
+
+			if ( is_array( $value ) && 1 == count( $value ) && ! is_numeric( $key ) ) {
+				$sub_value = reset( $value );
+				$key       = key( $value );
+				$value     = $sub_value;
+			}
+
+			$meta_key = is_numeric( $key ) ? $parent_key : $parent_key . '_' . strtolower( $key );
+
+			if ( self::is_meta_container( $value ) ) {
+				self::write_meta( $value, $post_id, $meta_key );
+				continue;
+			}
+
+			$value = self::sanitize_meta( $value );
+			update_post_meta( $post_id, 'fc' . $meta_key, $value );
+		}
+
+		return;
+
+		$value = self::sanitize_meta( $value );
 
 		$parent_key = preg_replace( '/(?<!\ )[A-Z]/', '_$0', $parent_key );
 		$parent_key = strtolower( $parent_key );
@@ -196,10 +221,38 @@ class FC_Importer {
 
 		update_post_meta( $post_id, $key, $value );
 
-		WP_CLI::debug( $key . '---' );
+		WP_CLI::debug( '---' . $key );
 
-		WP_CLI::log( $key  );
+	}
 
+
+	protected static function is_meta_container( $meta ) {
+
+		if ( ! is_array( $meta ) ) {
+			return false;
+		}
+
+		foreach( $meta as $key => $value ) {
+			if ( ! is_numeric( $key ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public static function sanitize_meta( $value ) {
+
+		if ( is_array( $value ) ) {
+			foreach( $value as $key => $val ) {
+				unset( $value[ $key ] );
+				$value[ esc_attr( strtolower( $key ) ) ] = self::sanitize_meta( $val );
+			}
+		} else {
+			$value = sanitize_text_field( $value );
+		}
+
+		return $value;
 	}
 
 	protected static function write_term_meta( $item, $term_id ) {
@@ -207,42 +260,42 @@ class FC_Importer {
 		foreach ( $item as $key => $value ) {
 
 			if ( is_array( $value ) ) {
-				if ( count( $value ) == 1 ) {
 
-
-					$lev2_key_root = key( $value );
-
-					if ( $lev2_key_root !== 'Chapter' ) {
-						if ( $lev2_key_root !== 'Question' ) {
-
-							foreach ( $value[ $lev2_key_root ] as $lev2_key => $lev2_val ) {
-
-								if ( is_array( $lev2_val ) ) {
-
-									foreach ( $lev2_val as $lev3_key => $lev3_val ) {
-
-										$lev3_key_string = 'fc' . preg_replace( '/(?<!\ )[A-Z]/', '_$0', $lev3_key ) . "_" . $lev2_key;
-										$lev3_key_string = strtolower( $lev3_key_string );
-
-										update_term_meta( $term_id, $lev3_key_string, $lev3_val );
-
-										WP_CLI::debug( $lev3_key_string . '---' );
-
-									}
-								} else {
-
-									$lev2_key_string = 'fc' . preg_replace( '/(?<!\ )[A-Z]/', '_$0', $lev2_key );
-									$lev2_key_string = strtolower( $lev2_key_string );
-
-									update_term_meta( $term_id, $lev2_key_string, $lev2_val );
-
-									WP_CLI::debug( $lev2_key_string . '---' );
-								}
-							}
-						}
-					}
-
+				if ( count( $value ) != 1 ) {
+					continue;
 				}
+
+				$lev2_key_root = key( $value );
+
+				if ( in_array( $lev2_key_root, array( 'Chapter', 'Question' ) ) ) {
+					continue;
+				}
+
+				foreach ( $value[ $lev2_key_root ] as $lev2_key => $lev2_val ) {
+
+					if ( is_array( $lev2_val ) ) {
+
+						foreach ( $lev2_val as $lev3_key => $lev3_val ) {
+
+							$lev3_key_string = 'fc' . preg_replace( '/(?<!\ )[A-Z]/', '_$0', $lev3_key ) . "_" . $lev2_key;
+							$lev3_key_string = strtolower( $lev3_key_string );
+
+							update_term_meta( $term_id, $lev3_key_string, $lev3_val );
+
+							WP_CLI::debug( $lev3_key_string . '---' );
+
+						}
+					} else {
+
+						$lev2_key_string = 'fc' . preg_replace( '/(?<!\ )[A-Z]/', '_$0', $lev2_key );
+						$lev2_key_string = strtolower( $lev2_key_string );
+
+						update_term_meta( $term_id, $lev2_key_string, $lev2_val );
+
+						WP_CLI::debug( $lev2_key_string . '---' );
+					}
+				}
+
 			} else {
 
 				$key = 'fc' . preg_replace( '/(?<!\ )[A-Z]/', '_$0', $key );
@@ -261,43 +314,3 @@ class FC_Importer {
 }
 
 WP_CLI::add_command( 'fc', 'FC_Importer' );
-
-
-class FC_Loop_Level {
-
-	function loop_level( $level, $post_id, $parent_key ) {
-
-		foreach ( $level as $key => $value ) {
-
-			if ( empty( $value ) ) {
-				// do nothing
-			} else {
-				if ( is_array( $value ) ) {
-
-					if ( count( $value ) == 1 ) {
-						foreach ( $value as $second_value ) {
-							if ( is_array( $second_value ) ) {
-								$value = $second_value;
-							}
-						}
-					}
-
-					if ( is_numeric( $key ) ) {
-						$key_text = '_' . $key;
-					} else {
-						$key_text = $key;
-					}
-
-					$parents_keys = $parent_key . $key_text;
-
-					$loop_level = new FC_Loop_Level();
-					$loop_level->loop_level( $value, $post_id, $parents_keys );
-
-				} else {
-					FC_Importer::write_meta( $key, $value, $post_id, $parent_key );
-				}
-			}
-		}
-	}
-
-}
