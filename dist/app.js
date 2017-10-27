@@ -11098,6 +11098,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.config.productionTip = false;
 
+window.allQuestions = [];
 window.currentQuestion = {
   title: 'This is the first question'
 
@@ -11858,6 +11859,7 @@ exports.push([module.i, "", ""]);
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__router__ = __webpack_require__(21);
 //
 //
 //
@@ -11889,6 +11891,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -11896,8 +11919,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       msg: 'Here is the view message 1234',
       qNumber: 1,
       lang: fcLang,
+      sections: window.allQuestions,
       question: currentQuestion,
-      isSearching: false,
+      isSearching: true,
       location: {
         section: 'test',
         part: 'testing',
@@ -11905,6 +11929,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }
 
     };
+  },
+  created: function created() {
+    this.fetchData();
+  },
+
+  methods: {
+    fetchData: function fetchData() {
+      var _this = this;
+
+      this.error = this.post = null;
+      this.loading = true;
+      // replace `getPost` with your data fetching util / API wrapper
+      jQuery.get('/wp-json/wp/v2/questions/all', function (data) {
+        _this.sections = window.allQuestions = data;
+        //          if (err) {
+        //            this.error = err.toString()
+        //          } else {
+        //            this.post = post
+        //          }
+      });
+    }
   }
 });
 
@@ -11956,7 +12001,76 @@ var render = function() {
         _c("h1", [_vm._v(_vm._s(_vm.question.title))]),
         _vm._v(" "),
         _vm.isSearching
-          ? _c("ul", [_c("li", [_vm._v("Question 1")])])
+          ? _c(
+              "ul",
+              _vm._l(_vm.sections, function(section) {
+                return _c("li", [
+                  _c("strong", [
+                    _vm._v(
+                      _vm._s(section.name) + " - " + _vm._s(section.description)
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "ul",
+                    _vm._l(section.children, function(part) {
+                      return _c("li", [
+                        _c("strong", [
+                          _vm._v(
+                            _vm._s(part.name) + " - " + _vm._s(part.description)
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "ul",
+                          _vm._l(part.children, function(chapter) {
+                            return _c("li", [
+                              _c("strong", [
+                                _vm._v(
+                                  _vm._s(chapter.name) +
+                                    " - " +
+                                    _vm._s(chapter.description)
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c(
+                                "ul",
+                                _vm._l(chapter.questions, function(question) {
+                                  return _c(
+                                    "li",
+                                    [
+                                      _c(
+                                        "router-link",
+                                        {
+                                          attrs: {
+                                            to: { path: "/" + question.number },
+                                            replace: ""
+                                          }
+                                        },
+                                        [
+                                          _vm._v(
+                                            _vm._s(_vm.lang.question) +
+                                              " " +
+                                              _vm._s(question.number) +
+                                              ": " +
+                                              _vm._s(question.title)
+                                          )
+                                        ]
+                                      )
+                                    ],
+                                    1
+                                  )
+                                })
+                              )
+                            ])
+                          })
+                        )
+                      ])
+                    })
+                  )
+                ])
+              })
+            )
           : _vm._e()
       ]),
       _vm._v(" "),
@@ -12067,7 +12181,7 @@ var render = function() {
                             attrs: {
                               to: {
                                 name: item.path,
-                                params: { id: _vm.qNumber }
+                                params: { id: _vm.$route.params.id }
                               },
                               replace: ""
                             }

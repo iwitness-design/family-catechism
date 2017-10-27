@@ -27,7 +27,7 @@
               <nav class="fc--answer--meta--navigation">
                   <ul class="columns is-mobile">
                       <li v-for="item in navItems" :class="item.path + ' is-one-third-touch column'">
-                          <router-link :to="{ name: item.path, params: { id: qNumber } }" replace>{{ lang[item.path] }}<i :class="'icon-play-circle ' + item.path"></i></router-link>
+                          <router-link :to="{ name: item.path, params: { id: $route.params.id } }" replace>{{ lang[item.path] }}<i :class="'icon-play-circle ' + item.path"></i></router-link>
                       </li>
                   </ul>
               </nav>

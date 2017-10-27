@@ -37,46 +37,51 @@ class Metaboxes {
 		$prefix = 'fc_';
 
 		$question_fields = array(
-			'text_answer_author'           => 'text',
-			'group_videos'                 => array(
-				'video_answer_author'     => 'text',
-				'video_answer_reference'  => 'text',
-				'video_answer_youtube_id' => 'text'
+			'number'           => 'text',
+			'answers_textanswer_answeredby'           => 'text',
+			'answers_textanswer_text'           => 'textarea',
+			'crossreferencesother'           => 'textarea',
+			'answers_videoanswer'                  => array(
+				'answeredby' => 'text',
+				'reference'  => 'text',
+				'youtubeid'  => 'text'
 			),
-			'group_cross_references'       => array(
-				'cross_reference_type'             => 'text',
-				'cross_reference_full_reference'   => 'text',
-				'cross_reference_abbrev_reference' => 'text',
-				'cross_reference_notes'            => 'text',
-				'cross_reference_text'             => 'text',
-				'cross_reference_link'             => 'text',
-
+			'crossreference'       => array(
+				'type'            => 'text',
+				'referencefull'   => 'text',
+				'referenceabbrev' => 'text',
+				'text'            => 'text',
+				'referencenotes'  => 'text', // array
+				'subsections'     => 'text', // array
+				'link'            => 'text', // array
+				'videos'          => 'text', // array
 			),
-			'group_cross_reference_videos' => array(
-				'cross_reference_number'           => 'text',
-				'cross_reference_video_reference'  => 'text',
-				'cross_reference_video_talent'     => 'text',
-				'cross_reference_video_youtube_id' => 'text'
+//			'group_cross_reference_videos' => array(
+//				'cross_reference_number'          => 'text',
+//				'cross_reference_video_reference' => 'text',
+//				'cross_reference_video_talent'    => 'text',
+//				'cross_reference_video_youtube_id' => 'text'
+//			),
+			'exercise' => array(
+				'questionstart'  => 'text',
+				'questionend'    => 'text',
+				'exercisenumber' => 'text',
+				'isquestion'     => 'text',
+				'question'       => 'text',
+				'answer'         => 'text',
+			    'action'         => 'text', // array
 			),
-			'group_excercises'             => array(
-				'excercise_question_start'       => 'text',
-				'excercise_question_end'         => 'text',
-				'excercise_question_number'      => 'text',
-				'excercise_question_is_question' => 'text',
-				'excercise_question'             => 'text',
-				'excercise_answer'               => 'text',
+			'thoughtprovoker'      => array(
+				'question'        => 'text',
+				'answer'          => 'text',
+				'crossreferences' => 'text' // array
 			),
-			'group_thought_provokers'      => array(
-				'thought_provoker_question'        => 'text',
-				'thought_provoker_answer'          => 'text',
-				'thought_provoker_cross_reference' => 'text'
-			),
-			'group_images'                 => array(
-				'image_is_category_by_diagram' => 'text',
-				'image_aspect_ratio'           => 'text',
-				'image_identifier'             => 'text',
-				'image_caption'                => 'text',
-				'image_filename'               => 'text',
+			'image'                 => array(
+				'iscatechismbydiagram' => 'text',
+				'aspectratio'           => 'text',
+				'identifier'             => 'text',
+				'caption'                => 'text',
+				'filename'               => 'text',
 
 			)
 		);
@@ -106,6 +111,7 @@ class Metaboxes {
 					'context'      => 'normal',
 					'priority'     => 'high',
 					'show_names'   => true,
+				    'closed'       => true,
 				) );
 
 				$group_field = $cmb_lev2->add_field( array(

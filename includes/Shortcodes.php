@@ -41,14 +41,13 @@ class Shortcodes {
 		wp_enqueue_style( familycatechism()->get_id(), familycatechism()->get_plugin_url() . 'dist/app.css', array(), familycatechism()->get_version() );
 		wp_enqueue_style( 'fontawesome', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' );
 
-//		wp_enqueue_script( familycatechism()->get_id() . '-manifest', familycatechism()->get_plugin_url() . 'assets/js/manifest.js', array(), familycatechism()->get_version() );
-//		wp_enqueue_script( familycatechism()->get_id() . '-vendor', familycatechism()->get_plugin_url() . 'assets/js/vendor.js', array(), familycatechism()->get_version() );
-		wp_enqueue_script( familycatechism()->get_id() . '-app', familycatechism()->get_plugin_url() . 'dist/app.js', array(), familycatechism()->get_version() );
+		wp_enqueue_script( familycatechism()->get_id() . '-app', familycatechism()->get_plugin_url() . 'dist/app.js', array( 'jquery' ), familycatechism()->get_version() );
 
 		wp_localize_script( familycatechism()->get_id() . '-app', 'fcLang', array(
 			'name'   => __( 'Family Catechism', familycatechism()->get_id() ),
 			'answer' => __( 'Answer', familycatechism()->get_id() ),
 			'q'      => __( 'Q', familycatechism()->get_id() ),
+			'question' => __( 'Question', familycatechism()->get_id() ),
 			'qnext'  => __( 'Next Question', familycatechism()->get_id() ),
 			'qlast'  => __( 'Last Question', familycatechism()->get_id() ),
 			'search'  => __( 'Search', familycatechism()->get_id() ),

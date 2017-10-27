@@ -6,6 +6,7 @@ import router from './router'
 
 Vue.config.productionTip = false
 
+window.allQuestions = [];
 window.currentQuestion = {
   title: 'This is the first question'
 }

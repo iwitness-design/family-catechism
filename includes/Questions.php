@@ -27,7 +27,6 @@ class Questions {
 
 	protected function __construct() {
 		add_action( 'init', array( $this, 'cpt' ) );
-		add_action( 'cmb2_init', array( $this, 'meta_router' ) );
 	}
 
 	public function cpt() {
@@ -42,6 +41,8 @@ class Questions {
 			'show_in_rest' => true,
 
 			'rest_base' => 'questions',
+
+			'rest_controller_class' => '\FamilyCatechism\API\Questions',
 
 			'menu_icon'     => 'dashicons-format-status',
 
@@ -69,7 +70,9 @@ class Questions {
 					'title'    => 'Language',
 					'taxonomy' => Taxos::$_language,
 				)
-			)
+			),
+
+		    'supports' => array( 'page-attributes', 'editor', 'title' ),
 
 		), array(
 
@@ -80,36 +83,6 @@ class Questions {
 
 		) );
 
-	}
-
-	public function meta_router() {
-		$this->answer_meta();
-	}
-
-	protected function answer_meta() {
-		$cmb = new_cmb2_box( array(
-			'id'           => 'fc_answer_meta',
-			'title'        => __( 'Answer', 'cmb2' ),
-			'object_types' => array( 'fc_question', ), // Post type
-			'context'      => 'normal',
-			'priority'     => 'high',
-			'show_names'   => true, // Show field names on the left
-			'show_in_rest' => WP_REST_Server::READABLE,
-		) );
-
-		$cmb->add_field( array(
-			'name'         => __( 'Question Number', familycatechism()->get_id() ),
-			'desc'         => __( 'The number for this question', familycatechism()->get_id() ),
-			'id'           => 'fc_number',
-			'type'         => 'text',
-			'attributes'   => array(
-				'type'    => 'number',
-				'pattern' => '\d*',
-			),
-		) );
-	}
-
-	protected function video_meta() {
 	}
 
 }
