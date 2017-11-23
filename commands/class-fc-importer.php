@@ -22,8 +22,6 @@ class FC_Importer {
 	 */
 	public function import( $args ) {
 
-
-
 		WP_CLI::log( "\nStarting the import process..." );
 
 		$import_file = $args[0];
@@ -41,8 +39,30 @@ class FC_Importer {
 
 		if ( ! $language = get_term_by( 'slug', strtolower( $lang ), 'fc_language' ) ) {
 			$language = wp_insert_term( $lang, 'fc_language', array( 'slug' => strtolower( $lang ), ) );
+			$language = get_term( $language['term_id'], 'fc_language' );
 		}
 
+		$chapter_label = 'Chapter';
+		$part_label    = 'Part';
+		$section_label = 'Section';
+
+		switch( $language->slug ) {
+			case 'filipino' :
+				$chapter_label = 'Kabanata';
+				$part_label    = 'Bahagi';
+				$section_label = 'Seksiyon';
+				break;
+			case 'chinese' :
+				$section_label = '卷';
+				$part_label    = '部分';
+				$chapter_label = '章';
+				break;
+			case 'spanish' :
+				$chapter_label = 'Capítulo';
+				$part_label    = 'Parte';
+				$section_label = 'Sección';
+				break;
+		}
 		$count_sections = $count_parts = $count_chapters = $count_questions = 0;
 
 		foreach ( $sections as $section ) {
@@ -50,11 +70,13 @@ class FC_Importer {
 
 			WP_CLI::log( sprintf( WP_CLI::colorize( "\n%gSection %s: %s %n" ), $section['Number'], $section['Name'] ) );
 
-			if ( ! $section_id = get_term_by( 'slug', 'section_' . $section['Number'], 'fc_section' ) ) {
-				$section_id = wp_insert_term( 'Section ' . $section['Number'], 'fc_section', array(
-					'description' => $section['Name'],
-					'slug'        => 'section_' . $section['Number']
+			if ( ! $section_id = get_term_by( 'slug', $language->slug . '_section_' . $section['Number'], 'fc_section' ) ) {
+				$section_id = wp_insert_term( $section_label . ' ' . $section['Number'], 'fc_section', array(
+					'description' => html_entity_decode( $section['Name'] ),
+					'slug'        => $language->slug . '_section_' . $section['Number']
 				) );
+
+				$section_id = get_term( $section_id['term_id'], 'fc_section' );
 			}
 
 			$section_id = $section_id->term_id;
@@ -66,12 +88,13 @@ class FC_Importer {
 
 				WP_CLI::log( sprintf( WP_CLI::colorize( "\n%y-->Part %s: %s %n" ), $part['Number'], $part['Name'] ) );
 
-				if ( ! $part_id = get_term_by( 'slug', 'section_' . $section['Number'] . '_part_' . $part['Number'], 'fc_section' ) ) {
-					$part_id = wp_insert_term( 'Part ' . $part['Number'], 'fc_section', array(
-						'description' => $part['Name'],
-						'slug'        => 'section_' . $section['Number'] . '_part_' . $part['Number'],
+				if ( ! $part_id = get_term_by( 'slug', $language->slug . '_section_' . $section['Number'] . '_part_' . $part['Number'], 'fc_section' ) ) {
+					$part_id = wp_insert_term( $part_label . ' ' . $part['Number'], 'fc_section', array(
+						'description' => html_entity_decode( $part['Name'] ),
+						'slug'        => $language->slug . '_section_' . $section['Number'] . '_part_' . $part['Number'],
 						'parent'      => $section_id
 					) );
+					$part_id = get_term( $part_id['term_id'], 'fc_section' );
 				}
 
 				$part_id = $part_id->term_id;
@@ -89,12 +112,14 @@ class FC_Importer {
 							WP_CLI::log( sprintf( WP_CLI::colorize("\n%w-->-->Chapter %s: %s %n" ), $chapter['Number'], $chapter['Name'] ) );
 						}
 
-						if ( ! $chapter_id = get_term_by( 'slug', 'section_' . $section['Number'] . '_part_' . $part['Number'] . '_chapter_' . $chapter['Number'], 'fc_section' ) ) {
-							wp_insert_term( 'Chapter ' . $chapter['Number'], 'fc_section', array(
-								'description' => $chapter['Name'],
-								'slug'        => 'section_' . $section['Number'] . '_part_' . $part['Number'] . '_chapter_' . $chapter['Number'],
+						if ( ! $chapter_id = get_term_by( 'slug', $language->slug . '_section_' . $section['Number'] . '_part_' . $part['Number'] . '_chapter_' . $chapter['Number'], 'fc_section' ) ) {
+							$chapter_id = wp_insert_term( $chapter_label . ' ' . $chapter['Number'], 'fc_section', array(
+								'description' => html_entity_decode( $chapter['Name'] ),
+								'slug'        => $language->slug . '_section_' . $section['Number'] . '_part_' . $part['Number'] . '_chapter_' . $chapter['Number'],
 								'parent'      => $part_id
 							) );
+
+							$chapter_id = get_term( $chapter_id['term_id'], 'fc_section' );
 						}
 
 						$chapter_id = $chapter_id->term_id;
@@ -114,10 +139,10 @@ class FC_Importer {
 
 									$post_array = array(
 										'post_content' => $question['Answers']['TextAnswer']['Text'],
-										'post_title'   => $question['Name'],
+										'post_title'   => html_entity_decode( $question['Name'] ),
 										'post_status'  => 'publish',
 										'post_type'    => 'fc_question',
-										'menu_order'   => empty( $question['Number'] ) ? 0 : absint( $question['Number'] ),
+										'menu_order'   => empty( $question['Number'] ) ? 9999 : absint( $question['Number'] ),
 										'tax_input'    => array(
 											'fc_section' => array(
 												$section_id,
@@ -128,7 +153,7 @@ class FC_Importer {
 										)
 									);
 
-									if ( $post = get_page_by_title( $question['Name'], OBJECT, 'fc_question' ) ) {
+									if ( $post = get_page_by_title( $post_array['post_title'], OBJECT, 'fc_question' ) ) {
 										$post_array['ID'] = $post->ID;
 									}
 
@@ -142,14 +167,14 @@ class FC_Importer {
 							} else { // if this is just a single question section
 								$count_questions ++;
 
-								WP_CLI::log( sprintf( WP_CLI::colorize("%p-->-->-->Question %s: %s %n" ), $question['Number'], $question['Name'] ) );
+								WP_CLI::log( sprintf( WP_CLI::colorize("%p-->-->-->Question %s: %s %n" ), $questions['Number'], $questions['Name'] ) );
 
 								$post_array = array(
 									'post_content' => $questions['Answers']['TextAnswer']['Text'],
-									'post_title'   => $questions['Name'],
+									'post_title'   => html_entity_decode( $question['Name'] ),
 									'post_status'  => 'publish',
 									'post_type'    => 'fc_question',
-									'menu_order'   => empty( $question['Number'] ) ? 0 : absint( $question['Number'] ),
+									'menu_order'   => empty( $questions['Number'] ) ? 9999 : absint( $questions['Number'] ),
 									'tax_input'    => array(
 										'fc_section' => array(
 											$section_id,
@@ -162,7 +187,7 @@ class FC_Importer {
 									)
 								);
 
-								if ( $post = get_page_by_title( $question['Name'], OBJECT, 'fc_question' ) ) {
+								if ( $post = get_page_by_title( $post_array['post_title'], OBJECT, 'fc_question' ) ) {
 									$post_array['ID'] = $post->ID;
 								}
 
@@ -170,7 +195,7 @@ class FC_Importer {
 									WP_CLI::error( 'Something went wrong!' );
 								}
 
-								$this->write_meta( $question, $post_id );
+								$this->write_meta( $questions, $post_id );
 
 							}
 						}
@@ -201,8 +226,20 @@ class FC_Importer {
 			$meta_key = is_numeric( $key ) ? $parent_key : $parent_key . '_' . strtolower( $key );
 
 			if ( self::is_meta_container( $value ) ) {
-				self::write_meta( $value, $post_id, $meta_key );
-				continue;
+
+				switch ( $meta_key ) {
+					case '_answers_videoanswer' :
+					case '_crossreference' :
+					case '_exercise' :
+					case '_thoughtprovoker' :
+					case '_image' :
+						$value = array( $value );
+						break;
+					default :
+						self::write_meta( $value, $post_id, $meta_key );
+						continue;
+				}
+
 			}
 
 			$value = self::sanitize_meta( $value );
@@ -249,7 +286,7 @@ class FC_Importer {
 				$value[ esc_attr( strtolower( $key ) ) ] = self::sanitize_meta( $val );
 			}
 		} else {
-			$value = sanitize_text_field( $value );
+			$value = htmlspecialchars_decode( wp_kses_post( $value ) );
 		}
 
 		return $value;

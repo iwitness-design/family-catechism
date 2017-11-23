@@ -58,6 +58,8 @@ class Taxos {
 
 				'hierarchical' => true,
 
+				'show_in_rest' => true,
+
 				# Add a custom column to the admin screen:
 				'admin_cols' => array(
 					'updated' => array(
@@ -89,6 +91,8 @@ class Taxos {
 				'meta_box'   => 'radio',
 				'hierarchical' => false,
 
+				'show_in_rest' => true,
+
 				# Add a custom column to the admin screen:
 				'admin_cols' => array(
 					'updated' => array(
@@ -103,7 +107,7 @@ class Taxos {
 				# Override the base names used for labels:
 				'singular' => __( 'Language', 'fc-mu' ),
 				'plural'   => __( 'Languages', 'fc-mu' ),
-				'slug'     => 'fc_language'
+				'slug'     => self::$_language
 
 			) );
 

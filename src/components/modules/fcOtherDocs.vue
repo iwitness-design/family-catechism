@@ -1,17 +1,10 @@
 <template>
-	<article class="fc--answer--meta--prayer">
-		<h1>{{ lang[$route.name] }}</h1>
-	</article>
+	<div v-html="question.cross_reference"></div>
 </template>
 
 <script>
   export default {
-    data () {
-      return {
-        lang       : fcLang,
-        question   : currentQuestion,
-      }
-    }
+    props : ['question']
   }
 </script>
 

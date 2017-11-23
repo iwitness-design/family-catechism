@@ -1,0 +1,88 @@
+# Copyright (C) 2017 Family Catechism
+# This file is distributed under the same license as the Family Catechism package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Family Catechism 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/family-catechism\n"
+"POT-Creation-Date: 2017-11-23 02:31:29+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-11-22 18:47-0800\n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.0.4\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: es\n"
+
+#: family-catechism.php:144 includes/Shortcodes.php:61
+msgid "Family Catechism"
+msgstr "Catecismo Familia"
+
+#: includes/Shortcodes.php:62
+msgid "Answer"
+msgstr "Respuesta"
+
+#: includes/Shortcodes.php:63
+msgid "Q"
+msgstr "P"
+
+#: includes/Shortcodes.php:64
+msgid "Question"
+msgstr "Pregunta"
+
+#: includes/Shortcodes.php:65
+msgid "Next Question"
+msgstr "Siguiente Pregunta"
+
+#: includes/Shortcodes.php:66
+msgid "Last Question"
+msgstr "Última ppregunta"
+
+#: includes/Shortcodes.php:67
+msgid "Search"
+msgstr "Buscar"
+
+#: includes/Shortcodes.php:68
+msgid "Video"
+msgstr "Video"
+
+#: includes/Shortcodes.php:69
+msgid "Prayer"
+msgstr "Oración"
+
+#: includes/Shortcodes.php:70
+msgid "Chapter Prayer"
+msgstr "Oración del Capítulo"
+
+#: includes/Shortcodes.php:71
+msgid "Summary Prayer"
+msgstr "Oración Resumen"
+
+#: includes/Shortcodes.php:72
+msgid "Scripture"
+msgstr "Escritura"
+
+#: includes/Shortcodes.php:73
+msgid "Catechism"
+msgstr "Catecismo"
+
+#: includes/Shortcodes.php:74
+msgid "Church Docs"
+msgstr "Documentos de la Iglesia"
+
+#: includes/Shortcodes.php:75
+msgid "Papal Docs"
+msgstr "Documentos Papales"
+
+#: includes/Shortcodes.php:76
+msgid "Other Docs"
+msgstr "Otros Documentos"
+
+#: includes/Shortcodes.php:77
+msgid "Doctrine"
+msgstr "Doctrina"
+
+#: includes/Shortcodes.php:78
+msgid "Thought Provokers"
+msgstr ""

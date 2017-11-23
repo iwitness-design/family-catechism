@@ -1,0 +1,88 @@
+# Copyright (C) 2017 Family Catechism
+# This file is distributed under the same license as the Family Catechism package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Family Catechism 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/family-catechism\n"
+"POT-Creation-Date: 2017-11-23 02:31:29+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-11-22 21:27-0800\n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.0.4\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: fil\n"
+
+#: family-catechism.php:144 includes/Shortcodes.php:61
+msgid "Family Catechism"
+msgstr ""
+
+#: includes/Shortcodes.php:62
+msgid "Answer"
+msgstr "Sagot"
+
+#: includes/Shortcodes.php:63
+msgid "Q"
+msgstr "T"
+
+#: includes/Shortcodes.php:64
+msgid "Question"
+msgstr "Tanong"
+
+#: includes/Shortcodes.php:65
+msgid "Next Question"
+msgstr ""
+
+#: includes/Shortcodes.php:66
+msgid "Last Question"
+msgstr ""
+
+#: includes/Shortcodes.php:67
+msgid "Search"
+msgstr "Maghanap"
+
+#: includes/Shortcodes.php:68
+msgid "Video"
+msgstr ""
+
+#: includes/Shortcodes.php:69
+msgid "Prayer"
+msgstr "Panalangin"
+
+#: includes/Shortcodes.php:70
+msgid "Chapter Prayer"
+msgstr "Panalangin ng Kab"
+
+#: includes/Shortcodes.php:71
+msgid "Summary Prayer"
+msgstr "Panalanging Buoda"
+
+#: includes/Shortcodes.php:72
+msgid "Scripture"
+msgstr "Banal na Kasulatan"
+
+#: includes/Shortcodes.php:73
+msgid "Catechism"
+msgstr "Katesismo ng Iglesia Katolika"
+
+#: includes/Shortcodes.php:74
+msgid "Church Docs"
+msgstr "Mga Dokumento ng Simbahan"
+
+#: includes/Shortcodes.php:75
+msgid "Papal Docs"
+msgstr "Mga Dokumento ng Simbahan"
+
+#: includes/Shortcodes.php:76
+msgid "Other Docs"
+msgstr "Iba pang mga Dokumento"
+
+#: includes/Shortcodes.php:77
+msgid "Doctrine"
+msgstr "Doktrina"
+
+#: includes/Shortcodes.php:78
+msgid "Thought Provokers"
+msgstr ""

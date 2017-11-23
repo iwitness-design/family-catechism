@@ -1,55 +1,47 @@
 <template>
-	<header class="fc--answer--header">
+	<section class="fc--answer--meta">
 
-		<nav class="columns is-vcentered">
-			<div class="fc--answer--header--question-number column is-narrow">
-				<span class="">{{ lang.q }}{{ qNumber }}</span>
-			</div>
-
-			<div class="column fc--answer--header--arrows is-narrow">
-				<span class="fc--answer--header--arrows-previous fa fa-angle-up"><span class="is-hidden">{{ lang.qlast }}</span></span>
-				<span class="fc--answer--header--arrows-next fa fa-angle-down"><span class="is-hidden">{{ lang.qnext }}</span></span>
-			</div>
-
-			<div class="column fc--answer--header--questions">
-				<h1>{{ question.title }}</h1>
-				<ul v-if="isSearching">
-					<li>Question 1</li>
-				</ul>
-			</div>
-
-			<div class="column is-narrow">
-				<div class="fc--answer--header--actions">
-					<i class="fa fa-search"></i><span class="is-hidden">{{ lang.search }}</span></div>
-			</div>
-
+		<nav class="fc--answer--meta--navigation">
+			<ul class="columns is-mobile">
+				<li v-for="module in modules" class="is-one-third-mobile column">
+					<a href="#" @click="selectModule(module, $event)" :class="module.isActive ? 'current' : ''">{{ module.name }}<span><img :src="getIcon( module.icon )" /></span></a>
+				</li>
+			</ul>
 		</nav>
 
-		<p class="fc--answer--header--breadcrumb">{{ location.section }}, {{ location.part }} > {{ location.chapter }}</p>
-	</header>
+		<slot></slot>
+	</section>
 </template>
 
 <script>
   export default {
     data () {
       return {
-        msg        : 'Here is the view message 1234',
-        qNumber    : 1,
-        lang       : fcLang,
-        question   : currentQuestion,
-        isSearching: false,
-        location   : {
-          section: 'test',
-          part   : 'testing',
-          chapter: 'test123'
-        }
-
+        modules : [],
+        lang    : fcLang,
       }
+    },
+    created () {
+      this.modules = this.$children;
+    },
+    methods: {
+      selectModule (selectedModule, e) {
+        e.preventDefault();
+        this.modules.forEach(module => {
+          module.isActive = (module.name === selectedModule.name);
+        });
+      },
+	  getIcon ( icon ) {
+        return '/wp-content/plugins/family-catechism/dist/assets/svg/' + icon + '.svg';
+	  },
+	  getClass ( module ) {
+        return 'is-one-third-mobile column ' + ( module.isActive ? 'current' : '' );
+	  }
     }
   }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-	@import "../scss/components/Header";
+	/*@import "../scss/components/Header";*/
 </style>

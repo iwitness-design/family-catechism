@@ -25,6 +25,10 @@ class Metaboxes {
 
 	protected function __construct() {
 		add_action( 'cmb2_admin_init', array( $this, 'cmb2_sample_metaboxes' ) );
+
+		add_action( 'cmb2_render_array', array( $this, 'render_callback_for_array' ), 10, 5 );
+		add_filter( 'cmb2_types_esc_array', array( $this, 'esc_callback_for_array' ), 10, 2 );
+		add_filter( 'cmb2_sanitize_array', array( $this, 'sanitize_array_callback' ), 10, 2 );
 	}
 
 
@@ -37,52 +41,51 @@ class Metaboxes {
 		$prefix = 'fc_';
 
 		$question_fields = array(
-			'number'           => 'text',
-			'answers_textanswer_answeredby'           => 'text',
-			'answers_textanswer_text'           => 'textarea',
-			'crossreferencesother'           => 'textarea',
-			'answers_videoanswer'                  => array(
+			'answers_textanswer_answeredby' => 'text',
+			'answers_textanswer_text'       => 'textarea',
+			'crossreferencesother'          => 'textarea',
+			'prayer'                        => 'textarea',
+			'answers_videoanswer'           => array(
 				'answeredby' => 'text',
 				'reference'  => 'text',
 				'youtubeid'  => 'text'
 			),
-			'crossreference'       => array(
+			'crossreference'                => array(
 				'type'            => 'text',
 				'referencefull'   => 'text',
 				'referenceabbrev' => 'text',
-				'text'            => 'text',
-				'referencenotes'  => 'text', // array
-				'subsections'     => 'text', // array
-				'link'            => 'text', // array
-				'videos'          => 'text', // array
+				'text'            => 'textarea',
+				'referencenotes'  => 'array', // array
+				'subsections'     => 'array', // array
+				'link'            => 'text',
+				'videos'          => 'array', // array
 			),
-//			'group_cross_reference_videos' => array(
-//				'cross_reference_number'          => 'text',
-//				'cross_reference_video_reference' => 'text',
-//				'cross_reference_video_talent'    => 'text',
-//				'cross_reference_video_youtube_id' => 'text'
-//			),
-			'exercise' => array(
+			//			'group_cross_reference_videos' => array(
+			//				'cross_reference_number'          => 'text',
+			//				'cross_reference_video_reference' => 'text',
+			//				'cross_reference_video_talent'    => 'text',
+			//				'cross_reference_video_youtube_id' => 'text'
+			//			),
+			'exercise'                      => array(
 				'questionstart'  => 'text',
 				'questionend'    => 'text',
 				'exercisenumber' => 'text',
 				'isquestion'     => 'text',
 				'question'       => 'text',
 				'answer'         => 'text',
-			    'action'         => 'text', // array
+				'action'         => 'array', // array
 			),
-			'thoughtprovoker'      => array(
+			'thoughtprovoker'               => array(
 				'question'        => 'text',
 				'answer'          => 'text',
-				'crossreferences' => 'text' // array
+				'crossreferences' => 'array' // array
 			),
-			'image'                 => array(
+			'image'                         => array(
 				'iscatechismbydiagram' => 'text',
-				'aspectratio'           => 'text',
-				'identifier'             => 'text',
-				'caption'                => 'text',
-				'filename'               => 'text',
-
+				'aspectratio'          => 'text',
+				'identifier'           => 'text',
+				'caption'              => 'text',
+				'filename'             => 'text',
 			)
 		);
 
@@ -157,4 +160,66 @@ class Metaboxes {
 			}
 		}
 	}
+
+	/**
+	 * @param \CMB2_Field $field
+	 * @param $escaped_value
+	 * @param $object_id
+	 * @param $object_type
+	 * @param \CMB2_Types $field_type_object
+	 *
+	 * @since  1.0.0
+	 *
+	 * @author Tanner Moushey
+	 */
+	public function render_callback_for_array( $field, $escaped_value, $object_id, $object_type, $field_type_object ) {
+		echo $field_type_object->textarea();
+	}
+
+	/**
+	 * Custom escaping for the array field
+	 *
+	 * @param $value
+	 * @param $meta_value
+	 *
+	 * @since  1.0.0
+	 *
+	 * @return false|string
+	 * @author Tanner Moushey
+	 */
+	public function esc_callback_for_array( $value, $meta_value ) {
+		if ( empty( $meta_value ) ) {
+			return '';
+		}
+
+		if ( ! ( is_array( $meta_value ) || is_object( $meta_value ) ) ) {
+			return $meta_value;
+		}
+
+		return wp_json_encode( $meta_value, JSON_PRETTY_PRINT );
+	}
+
+	/**
+	 * Sanitization callback for the array field
+	 *
+	 * @param $override_value
+	 * @param $value
+	 *
+	 * @since  1.0.0
+	 *
+	 * @return array|mixed|object
+	 * @author Tanner Moushey
+	 */
+	public function sanitize_array_callback( $override_value, $value ) {
+		if ( empty( $value ) ) {
+			return $value;
+		}
+
+		if ( ! $override_value = json_decode( stripslashes( wp_kses_post( $value ) ) ) ) {
+			$override_value = $value;
+		}
+
+		return $override_value;
+	}
+
 }

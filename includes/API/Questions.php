@@ -24,24 +24,16 @@ class Questions extends \WP_REST_Posts_Controller {
 
 		if ( 1 || ! $all_questions = get_transient( 'fc_all_questions' ) ) {
 
-			$sections     = get_terms( array( 'taxonomy' => Taxos::$_section, 'fields' => 'all_with_object_id' ) );
-			$new_sections = array();
-
-			foreach ( $sections as $key => $section ) {
-				$new_sections[ $section->term_id ]            = $section;
-				$new_sections[ $section->term_id ]->questions = array();
-			}
-
-			$sections = $new_sections;
-			unset( $new_sections );
-
 			$questions = get_posts( array(
 				'post_type'              => $this->post_type,
 				'posts_per_page'         => 400,
 				'update_post_meta_cache' => false,
-				'fa_language'            => 'english',
+				'fc_language'            => empty( $_GET['fc_language'] ) ? 'english' : get_term( $_GET['fc_language'], Taxos::$_language )->slug,
 			    'order'                  => 'ASC',
+			    'orderby'                => 'menu_order',
 			) );
+
+			$all_questions = array();
 
 			foreach ( $questions as $question ) {
 
@@ -49,19 +41,24 @@ class Questions extends \WP_REST_Posts_Controller {
 					continue;
 				}
 
+				$data = array(
+					'id'     => $question->ID,
+					'title'  => $question->post_title,
+					'number' => $question->menu_order,
+				);
+
 				foreach ( $q_sections as $section ) {
-					if ( false !== strpos( $section->slug, 'chapter' ) ) {
-						$sections[ $section->term_id ]->questions[] = array(
-							'id'     => $question->ID,
-							'title'  => $question->post_title,
-							'number' => $question->menu_order,
-						);
+					if ( false !== strpos( strtolower( $section->slug ), 'chapter' ) ) {
+						$data['chapter'] = html_entity_decode( $section->name . ': ' . $section->description );
+					} elseif ( false !== strpos( strtolower( $section->slug ), 'part' ) ) {
+						$data['part'] = html_entity_decode( $section->name . ': ' . $section->description );
+					} elseif ( false !== strpos( strtolower( $section->slug ), 'section' ) ) {
+						$data['section'] = html_entity_decode( $section->name . ': ' . $section->description );
 					}
 				}
-			}
 
-			$all_questions = array();
-			self::sort_terms_hierarchicaly( $sections, $all_questions );
+				$all_questions[] = $data;
+			}
 
 			set_transient( 'fc_all_questions', $all_questions );
 
@@ -84,8 +81,51 @@ class Questions extends \WP_REST_Posts_Controller {
 		$query_params = parent::get_collection_params();
 
 		$query_params['per_page']['maximum'] = 400;
+		$query_params['per_page']['default'] = 1;
+		$query_params['order']['default'] = 'asc';
+
+		$language = get_term_by( 'slug', 'english', Taxos::$_language );
+		$query_params[ Taxos::$_language ]['default'] = $language->term_id;
+
+		$query_params['numbers'] = array(
+			'description' => __( 'Limit questions to the provided numbers' ),
+			'type'        => 'array',
+			'items'       => array(
+				'type' => 'integer',
+			),
+			'default'     => array(),
+		);
 
 		return $query_params;
+	}
+
+	/**
+	 * Determines the allowed query_vars for a get_items() response and prepares
+	 * them for WP_Query.
+	 *
+	 * @since 4.7.0
+	 * @access protected
+	 *
+	 * @param array           $prepared_args Optional. Prepared WP_Query arguments. Default empty array.
+	 * @param \WP_REST_Request $request       Optional. Full details about the request.
+	 * @return array Items query arguments.
+	 */
+	protected function prepare_items_query( $prepared_args = array(), $request = null ) {
+		$query_args = parent::prepare_items_query( $prepared_args, $request );
+
+		if ( empty( $query_args['meta_query'] ) ) {
+			$query_args['meta_query'] = array();
+		}
+
+		if ( isset( $request['numbers'] ) ) {
+			$query_args['meta_query'][] = array(
+				'key'     => 'fc_number',
+				'value'   => (array) $request['numbers'],
+				'compare' => 'IN',
+			);
+		}
+
+		return $query_args;
 	}
 
 	protected function get_additional_fields( $object_type = null ) {
@@ -111,11 +151,51 @@ class Questions extends \WP_REST_Posts_Controller {
 			),
 		);
 
+		$fields['prayer'] = array(
+			'get_callback' => array( $this, 'get_value' ),
+			'schema'       => array(
+				'description' => __( 'The summary prayer.', familycatechism()->get_id() ),
+				'type'        => 'object',
+				'context'     => array( 'view' ),
+			    'readonly'    => true,
+			),
+		);
+
 		$fields['video_answer'] = array(
 			'get_callback' => array( $this, 'get_value' ),
 			'schema'       => array(
 				'description' => __( 'The video answer.', familycatechism()->get_id() ),
 				'type'        => 'array',
+				'context'     => array( 'view' ),
+			    'readonly'    => true,
+			),
+		);
+
+		$fields['chapter'] = array(
+			'get_callback' => array( $this, 'get_value' ),
+			'schema'       => array(
+				'description' => __( 'The chapter details.', familycatechism()->get_id() ),
+				'type'        => 'object',
+				'context'     => array( 'view' ),
+			    'readonly'    => true,
+			),
+		);
+
+		$fields['part'] = array(
+			'get_callback' => array( $this, 'get_value' ),
+			'schema'       => array(
+				'description' => __( 'The part details.', familycatechism()->get_id() ),
+				'type'        => 'object',
+				'context'     => array( 'view' ),
+			    'readonly'    => true,
+			),
+		);
+
+		$fields['section'] = array(
+			'get_callback' => array( $this, 'get_value' ),
+			'schema'       => array(
+				'description' => __( 'The section details.', familycatechism()->get_id() ),
+				'type'        => 'object',
 				'context'     => array( 'view' ),
 			    'readonly'    => true,
 			),
@@ -189,11 +269,19 @@ class Questions extends \WP_REST_Posts_Controller {
 			case 'video_answer' :
 				return self::get_meta( $post['id'], 'fc_answers_videoanswer' );
 
+			case 'prayer' :
+				return self::get_meta( $post['id'], 'fc_prayer' );
+
+			case 'chapter' :
+			case 'part' :
+			case 'section' :
+				return self::get_term_details( $post['id'], $field_name );
+
 			case 'cross_references' :
 				return self::get_meta( $post['id'], 'fc_crossreference' );
 
 			case 'cross_reference' :
-				return self::get_meta( $post['id'], 'fc_crossreferencesother' );
+				return wpautop( self::get_meta( $post['id'], 'fc_crossreferencesother' ) );
 
 			case 'exercises' :
 				return self::get_meta( $post['id'], 'fc_exercise' );
@@ -230,6 +318,60 @@ class Questions extends \WP_REST_Posts_Controller {
 	}
 
 	/**
+	 * Get the chapter prayer for the provided question
+	 *
+	 * @param $post_id
+	 * @param string $type the term type. either chapter, part, or section
+	 *
+	 * @since  1.0.0
+	 *
+	 * @return mixed|string
+	 * @author Tanner Moushey
+	 */
+	public static function get_term_details( $post_id, $type = 'chapter' ) {
+		$terms = get_the_terms( $post_id, Taxos::$_section );
+		$data  = array();
+
+		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+			return $data;
+		}
+
+		foreach( $terms as $term ) {
+
+			$term_type = '';
+			foreach( array( 'chapter', 'part', 'section' ) as $term_type ) {
+				if ( strpos( $term->slug, $term_type ) ) {
+					break;
+				}
+			}
+
+			if ( $term_type != $type ) {
+				continue;
+			}
+
+			$data = array(
+				'id'          => $term->term_id,
+				'name'        => $term->name,
+				'description' => $term->description,
+			);
+
+			break;
+		}
+
+		if ( empty( $data ) ) {
+			return $data;
+		}
+
+		switch ( $type ) {
+			case 'chapter' :
+				$data['prayer'] = wp_kses_post( apply_filters( 'the_content', get_term_meta( $data['id'], 'fc_prayer', true ) ) );
+				break;
+		}
+
+		return $data;
+	}
+
+	/**
 	 * Sanitize meta fields
 	 *
 	 * @param $value
@@ -240,12 +382,17 @@ class Questions extends \WP_REST_Posts_Controller {
 	 * @author Tanner Moushey
 	 */
 	public static function sanitize_meta( $value ) {
+
+		if ( is_object( $value ) ) {
+			$value = get_object_vars( $value );
+		}
+
 		if ( is_array( $value ) ) {
 			foreach( $value as &$val ) {
 				$val = self::sanitize_meta( $val );
 			}
 		} else {
-			$value = htmlspecialchars_decode( sanitize_text_field( $value ) );
+			$value = htmlspecialchars_decode( wp_kses_post( html_entity_decode( $value ) ) );
 		}
 
 		return $value;
