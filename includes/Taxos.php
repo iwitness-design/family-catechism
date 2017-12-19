@@ -60,15 +60,6 @@ class Taxos {
 
 				'show_in_rest' => true,
 
-				# Add a custom column to the admin screen:
-				'admin_cols' => array(
-					'updated' => array(
-						'title'       => __( 'Updated', 'plf-mu' ),
-						'meta_key'    => 'updated_date',
-						'date_format' => 'd/m/Y'
-					),
-				),
-
 			), array(
 
 				# Override the base names used for labels:
@@ -79,6 +70,11 @@ class Taxos {
 			) );
 
 		} );
+
+//		add_filter( 'get_terms_args', function( $args ) {
+//			$args['parent'] = 0;
+//			return $args;
+//		} );
 
 	}
 
@@ -92,15 +88,6 @@ class Taxos {
 				'hierarchical' => false,
 
 				'show_in_rest' => true,
-
-				# Add a custom column to the admin screen:
-				'admin_cols' => array(
-					'updated' => array(
-						'title'       => __( 'Updated', 'plf-mu' ),
-						'meta_key'    => 'updated_date',
-						'date_format' => 'd/m/Y'
-					),
-				),
 
 			), array(
 

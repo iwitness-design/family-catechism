@@ -48,12 +48,24 @@ class Questions extends \WP_REST_Posts_Controller {
 				);
 
 				foreach ( $q_sections as $section ) {
+					$key = false;
+
 					if ( false !== strpos( strtolower( $section->slug ), 'chapter' ) ) {
-						$data['chapter'] = html_entity_decode( $section->name . ': ' . $section->description );
+						$key = 'chapter';
 					} elseif ( false !== strpos( strtolower( $section->slug ), 'part' ) ) {
-						$data['part'] = html_entity_decode( $section->name . ': ' . $section->description );
+						$key = 'part';
 					} elseif ( false !== strpos( strtolower( $section->slug ), 'section' ) ) {
-						$data['section'] = html_entity_decode( $section->name . ': ' . $section->description );
+						$key = 'section';
+					}
+
+					if ( $key ) {
+						$data[ $key ] = array(
+							'id'          => $section->term_id,
+							'name'        => html_entity_decode( $section->name ),
+							'description' => html_entity_decode( $section->description ),
+							'color'       => self::get_term_color( $section->term_id ),
+							'image'       => self::get_term_image( $section->term_id ),
+						);
 					}
 				}
 
@@ -353,6 +365,8 @@ class Questions extends \WP_REST_Posts_Controller {
 				'id'          => $term->term_id,
 				'name'        => $term->name,
 				'description' => $term->description,
+			    'color'       => self::get_term_color( $term->term_id ),
+			    'image'       => self::get_term_image( $term->term_id ),
 			);
 
 			break;
@@ -372,13 +386,55 @@ class Questions extends \WP_REST_Posts_Controller {
 	}
 
 	/**
+	 * Get the color associated with the term
+	 *
+	 * @param $term_id
+	 *
+	 * @since  1.0.0
+	 *
+	 * @return string
+	 * @author Tanner Moushey
+	 */
+	public static function get_term_color( $term_id ) {
+		if ( ! $color = get_term_meta( $term_id, 'fc_term_color', true ) ) {
+			return '';
+		}
+
+		return sanitize_text_field( $color );
+	}
+
+	/**
+	 * Get the image associated with this image
+	 *
+	 * @param $term_id
+	 *
+	 * @since  1.0.0
+	 *
+	 * @return string
+	 * @author Tanner Moushey
+	 */
+	public static function get_term_image( $term_id ) {
+		if ( ! $image_id = get_term_meta( $term_id, 'fc_term_image_id', true ) ) {
+			return '';
+		}
+
+		$image = wp_get_attachment_image_src( $image_id, 'medium' );
+
+		if ( empty( $image[0] ) ) {
+			return '';
+		}
+
+		return esc_url( $image[0] );
+	}
+
+	/**
 	 * Sanitize meta fields
 	 *
 	 * @param $value
 	 *
 	 * @since  1.0.0
 	 *
-	 * @return string|void
+	 * @return string
 	 * @author Tanner Moushey
 	 */
 	public static function sanitize_meta( $value ) {

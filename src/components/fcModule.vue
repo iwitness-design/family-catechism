@@ -18,7 +18,7 @@
     },
 	computed : {
       className () {
-        return 'fc--answer--meta--module fc--answer--meta--' + this.name.toLowerCase().replace( ' ', '-' );
+        return 'fc--answer--meta--module fc--answer--meta--' + this.icon;
 	  }
 	},
     props: {

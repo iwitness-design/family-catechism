@@ -3,7 +3,7 @@
 
 		<nav class="fc--answer--meta--navigation">
 			<ul class="columns is-mobile">
-				<li v-for="module in modules" class="is-one-third-mobile column">
+				<li v-for="module in modules" :class="'is-one-third-mobile column ' + module.icon">
 					<a href="#" @click="selectModule(module, $event)" :class="module.isActive ? 'current' : ''">{{ module.name }}<span><img :src="getIcon( module.icon )" /></span></a>
 				</li>
 			</ul>

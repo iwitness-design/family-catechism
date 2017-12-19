@@ -8,6 +8,21 @@ $text-color: #343434;
 //$gray: #c4cacd;
 $gray-darker: #9b9eac;
 
+$types: video prayer scripture catechism church-docs papal-docs other-docs doctrine thought-provoker;
+
+$tab-colors: (
+	video: #AF1E2D,
+	prayer: #88B5C8,
+	scripture: #88B5C8,
+	catechism: #828598,
+	church-docs: #828598,
+	papal-docs: #828598,
+	other-docs: #828598,
+	doctrine: #93C6B3,
+	thought-provoker: #93C6B3,
+);
+
+
 @import "../assets/fc-fonts/style.scss";
 @import "~bulma/sass/utilities/all";
 @import "~bulma/sass/base/helpers";
@@ -19,6 +34,23 @@ $gray-darker: #9b9eac;
 
 	* {
 		box-sizing: border-box;
+	}
+
+	i,
+	[class^="icon-"],
+	[class*=" icon-"] {
+		/* use !important to prevent issues with browser extensions that change fonts */
+		font-family: 'fc-fonts' !important;
+		speak: none;
+		font-style: normal;
+		font-weight: normal;
+		font-variant: normal;
+		text-transform: none;
+		line-height: 1;
+
+		/* Better Font Rendering =========== */
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
 	}
 
 	.superscript {
@@ -80,11 +112,11 @@ $gray-darker: #9b9eac;
 
 	&--header {
 		overflow: hidden;
-		margin-bottom: 2rem;
+		margin-bottom: 1.5rem;
 
 		&--local {
 			overflow: hidden;
-			margin-bottom: 1rem;
+			margin-bottom: .75rem;
 
 			ul {
 				list-style-type: none;
@@ -93,7 +125,7 @@ $gray-darker: #9b9eac;
 
 			li {
 				display: inline-block;
-				margin-left: 1rem;
+				margin-left: .75rem;
 			}
 		}
 
@@ -114,7 +146,7 @@ $gray-darker: #9b9eac;
 			word-spacing: 1000px;
 			line-height: 1;
 			text-transform: uppercase;
-			font-size: 5rem;
+			font-size: 3.5rem;
 			max-width: 60%;
 			margin-top: 0;
 		}
@@ -136,7 +168,7 @@ $gray-darker: #9b9eac;
 
 			h1 {
 				font-size: 1em;
-				margin: 2rem;
+				margin: 1.5rem;
 				cursor: pointer;
 			}
 
@@ -165,7 +197,7 @@ $gray-darker: #9b9eac;
 				margin-left: 0;
 
 				span {
-					padding: .5rem;
+					padding: .35rem;
 					min-width: 4em;
 					text-align: center;
 					font-weight: bold;
@@ -223,10 +255,13 @@ $gray-darker: #9b9eac;
 						background: transparent;
 						border: none;
 						width: 100%;
-						padding: 1.75rem 2rem;
-						font-size: 1em;
+						padding: 1.25rem 1.5rem;
+						font-size: 1.25em;
 						line-height: 1;
 						outline: none !important;
+						box-shadow: none !important;
+						height: auto;
+						margin: 0;
 					}
 				}
 
@@ -234,17 +269,17 @@ $gray-darker: #9b9eac;
 					position: absolute;
 					z-index: 1;
 					background: $gray;
-					border-bottom: 2rem solid $gray;
+					border-bottom: 1.5rem solid $gray;
 					max-height: 500px;
 					overflow: scroll;
 					width: 100%;
-					font-size: 1.25rem;
+					font-size: .9rem;
 
 					.section,
 					.part,
 					.chapter,
 					a {
-						padding: 1rem 2rem;
+						padding: .75rem 1.5rem;
 						display: block;
 						line-height: 1.5;
 						font-size: 1em;
@@ -254,7 +289,7 @@ $gray-darker: #9b9eac;
 					.section {
 						background: $red;
 						color: white;
-						margin-top: 1rem;
+						margin-top: .75rem;
 					}
 
 					.section,
@@ -266,7 +301,7 @@ $gray-darker: #9b9eac;
 					.section,
 					.part,
 					.chapter {
-						padding: 1em 2rem;
+						padding: 1em 1.5rem;
 					}
 
 					a {
@@ -278,7 +313,7 @@ $gray-darker: #9b9eac;
 						}
 
 						.question-number {
-							padding: .5rem;
+							padding: .35rem;
 							border-radius: 100px;
 							background: $red;
 							color: #ffffff;
@@ -290,11 +325,9 @@ $gray-darker: #9b9eac;
 					ul {
 						padding-left: 0;
 						list-style-type: none;
+						margin-left: 0;
 					}
 
-					> ul > li > ul {
-						//margin-left: 1rem;
-					}
 				}
 			}
 
@@ -305,7 +338,7 @@ $gray-darker: #9b9eac;
 		}
 
 		footer {
-			margin: 3rem;
+			margin: 2.15rem;
 			border-top: 1px solid $text-color;
 			overflow: hidden;
 
@@ -330,7 +363,7 @@ $gray-darker: #9b9eac;
 				.columns {
 					padding: 0;
 					text-align: center;
-					font-size: 1rem;
+					font-size: .75rem;
 					line-height: 1.25;
 
 					@media screen and (max-width: $desktop - 1px) {
@@ -345,14 +378,15 @@ $gray-darker: #9b9eac;
 				a {
 					display: block;
 					text-transform: uppercase;
-					color: $gray-darker;
+					color: $red;
+					opacity: .5;
 
 					span {
 						display: block;
 						margin: $column-gap * 2 auto auto;
 						width: 100%;
 						position: relative;
-						background: $gray-darker;
+						background: $red;
 						color: white;
 						max-width: 85px;
 
@@ -368,32 +402,38 @@ $gray-darker: #9b9eac;
 							width: 100%;
 							left: 0;
 							top: 50%;
-							font-size: 7rem;
-							margin-top: -3.5rem;
+							font-size: 5rem;
+							margin-top: -2.5rem;
 						}
 
 					}
 
 					&:hover, &:focus, &:active, &.current {
 						text-decoration: none;
-						color: $red;
+						opacity: 1;
+					}
+				}
+
+				@each $type in $types {
+					.#{$type} a {
+						color: map_get( $tab-colors, $type );
 
 						span {
-							background: $red;
-							color: white;
+							background: map_get( $tab-colors, $type );;
 						}
 					}
 				}
+
 			}
 
 			&--module {
 				&--title {
 					//margin-top: $column-gap * 2;
 					//background: $gray;
-					padding: 2rem 0;
+					padding: 1.5rem 0;
 					//color: $red;
 					text-transform: uppercase;
-					font-size: 2.5rem;
+					font-size: 1.75rem;
 				}
 			}
 
@@ -406,7 +446,7 @@ $gray-darker: #9b9eac;
 		&--item {
 			margin-top: $column-gap * 2;
 			background: $gray;
-			padding: 2rem;
+			padding: 1.5rem;
 
 			&.has-content {
 
@@ -427,7 +467,7 @@ $gray-darker: #9b9eac;
 							content: '\f078';
 							font-family: "fc-fonts";
 							position: absolute;
-							right: 2rem;
+							right: 1.5rem;
 							top: 50%;
 							margin-top: -.75em;
 						}
@@ -437,19 +477,18 @@ $gray-darker: #9b9eac;
 
 			}
 
-
 			&--title {
-				font-size: 1.5rem;
+				font-size: 1rem;
 				line-height: 1.5;
-				margin: -2rem;
-				padding: 2rem 5rem 2rem 2rem;
+				margin: -1.5rem;
+				padding: 1.5rem 3.5rem 1.5rem 1.5rem;
 				position: relative;
 			}
 
 			&.open {
 
 				.fc--accordion--item--title {
-					margin-bottom: 2rem;
+					margin-bottom: 1.5rem;
 
 					&:after {
 						content: '\f077';
@@ -460,6 +499,17 @@ $gray-darker: #9b9eac;
 
 		}
 
+	}
+
+	@each $type in $types {
+		&--answer--meta--#{$type} {
+			.fc--accordion--item.has-content:hover,
+			.fc--accordion--item.has-content.open {
+				.fc--accordion--item--title {
+					background: map_get( $tab-colors, $type );
+				}
+			}
+		}
 	}
 
 }
@@ -476,7 +526,7 @@ $gray-darker: #9b9eac;
 		&--answer {
 
 			&--header {
-				font-size: 1rem;
+				font-size: .75rem;
 				line-height: 1.5;
 			}
 

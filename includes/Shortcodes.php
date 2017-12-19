@@ -54,6 +54,7 @@ class Shortcodes {
 	 * @author Tanner Moushey
 	 */
 	protected function register_scripts() {
+		wp_enqueue_style( 'fontawesome', familycatechism()->get_plugin_url() . 'dist/css/app.css', array(), familycatechism()->get_version() );
 		wp_enqueue_style( familycatechism()->get_id(), familycatechism()->get_plugin_url() . 'dist/css/app.css', array(), familycatechism()->get_version() );
 		wp_enqueue_script( familycatechism()->get_id() . '-app', familycatechism()->get_plugin_url() . 'dist/js/app.js', array( 'jquery' ), familycatechism()->get_version() );
 

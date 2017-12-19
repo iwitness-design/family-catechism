@@ -24,23 +24,87 @@ class Metaboxes {
 	}
 
 	protected function __construct() {
-		add_action( 'cmb2_admin_init', array( $this, 'cmb2_sample_metaboxes' ) );
+		add_action( 'cmb2_admin_init', array( $this, 'term_meta' ) );
+		add_action( 'cmb2_admin_init', array( $this, 'question_meta' ) );
 
 		add_action( 'cmb2_render_array', array( $this, 'render_callback_for_array' ), 10, 5 );
 		add_filter( 'cmb2_types_esc_array', array( $this, 'esc_callback_for_array' ), 10, 2 );
 		add_filter( 'cmb2_sanitize_array', array( $this, 'sanitize_array_callback' ), 10, 2 );
+
+		add_action( 'admin_head', array( $this, 'remove_grid_meta' ) );
 	}
 
+	/**
+	 * Remove edit and add form actions to prevent the Grid color metabox from showing
+	 *
+	 * @since  1.0.0
+	 *
+	 * @author Tanner Moushey
+	 */
+	public function remove_grid_meta() {
+		global $wp_filter;
+
+		if ( has_action( Taxos::$_section . '_edit_form_fields' ) ) {
+			$wp_filter[ Taxos::$_section . '_edit_form_fields' ]->remove_all_filters( 10 );
+			$wp_filter[ Taxos::$_section . '_add_form_fields' ]->remove_all_filters( 10 );
+		}
+	}
+
+	function term_meta() {
+
+		$prefix = 'fc_';
+
+		/**
+		 * Metabox to add fields to categories and tags
+		 */
+		$cmb_term = new_cmb2_box( array(
+			'id'           => $prefix . 'edit',
+			'title'        => esc_html__( 'Category Metabox', familycatechism()->get_id() ), // Doesn't output for term boxes
+			'object_types' => array( 'term' ),
+			'taxonomies'   => array( Taxos::$_section ),
+		) );
+
+		$cmb_term->add_field( array(
+			'name'             => esc_html__( 'Section Color', familycatechism()->get_id() ),
+			'desc'             => esc_html__( 'The color to use behind questions that have this term.', familycatechism()->get_id() ),
+			'id'               => $prefix . 'term_color',
+			'type'             => 'select',
+			'default'          => 'red',
+			'show_on_cb'       => array( $this, 'is_main_section' ),
+			'options'          => array(
+				'red'    => __( 'Red', familycatechism()->get_id() ),
+				'green'  => __( 'Green', familycatechism()->get_id() ),
+				'purple' => __( 'Purple', familycatechism()->get_id() ),
+				'orange' => __( 'Orange', familycatechism()->get_id() ),
+				'yellow' => __( 'Yellow', familycatechism()->get_id() ),
+				'blue'   => __( 'Blue', familycatechism()->get_id() ),
+			),
+		) );
+
+		$cmb_term->add_field( array(
+			'name' => esc_html__( 'Section Image', familycatechism()->get_id() ),
+			'desc' => esc_html__( 'The image to use behind questions that have this term.', familycatechism()->get_id() ),
+			'id'   => $prefix . 'term_image',
+			'type' => 'file',
+		) );
+
+
+
+	}
+
+	public function is_main_section( $cmb ) {
+		return ! boolval( wp_get_term_taxonomy_parent_id( $cmb->object_id, Taxos::$_section ) );
+	}
 
 	/**
 	 * Define the metabox and field configurations.
 	 */
-	function cmb2_sample_metaboxes() {
-
+	function question_meta() {
 
 		$prefix = 'fc_';
 
 		$question_fields = array(
+			'answer_background_image'       => 'file',
 			'answers_textanswer_answeredby' => 'text',
 			'answers_textanswer_text'       => 'textarea',
 			'crossreferencesother'          => 'textarea',
